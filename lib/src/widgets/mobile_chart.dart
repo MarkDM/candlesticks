@@ -39,6 +39,7 @@ class MobileChart extends StatefulWidget {
   final void Function() onPanEnd;
 
   final Function() onReachEnd;
+  final bool showVolume;
 
   MobileChart({
     required this.onScaleUpdate,
@@ -49,6 +50,7 @@ class MobileChart extends StatefulWidget {
     required this.onPanDown,
     required this.onPanEnd,
     required this.onReachEnd,
+    this.showVolume = false,
   });
 
   @override
@@ -126,11 +128,11 @@ class _MobileChartState extends State<MobileChart> {
 
         return TweenAnimationBuilder(
           tween: Tween(begin: candlesHighPrice, end: candlesHighPrice),
-          duration: Duration(milliseconds: 300),
+          duration: Duration(milliseconds: 100),
           builder: (context, double high, _) {
             return TweenAnimationBuilder(
               tween: Tween(begin: candlesLowPrice, end: candlesLowPrice),
-              duration: Duration(milliseconds: 300),
+              duration: Duration(milliseconds: 100),
               builder: (context, double low, _) {
                 final currentCandle = longPressX == null
                     ? null
@@ -221,65 +223,67 @@ class _MobileChartState extends State<MobileChart> {
                               ],
                             ),
                           ),
-                          Expanded(
-                            flex: 1,
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      border: Border(
-                                        right: BorderSide(
-                                          color: Theme.of(context).grayColor,
-                                          width: 1,
-                                        ),
-                                      ),
-                                    ),
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(top: 10.0),
-                                      child: VolumeWidget(
-                                        candles: widget.candles,
-                                        barWidth: widget.candleWidth,
-                                        index: widget.index,
-                                        high:
-                                            HelperFunctions.getRoof(volumeHigh),
-                                        bearColor:
-                                            Theme.of(context).secondaryRed,
-                                        bullColor:
-                                            Theme.of(context).secondaryGreen,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      SizedBox(
-                                        height: DATE_BAR_HEIGHT,
-                                        child: Center(
-                                          child: Row(
-                                            children: [
-                                              Text(
-                                                "-${HelperFunctions.addMetricPrefix(HelperFunctions.getRoof(volumeHigh))}",
-                                                style: TextStyle(
-                                                  color: Theme.of(context)
-                                                      .grayColor,
-                                                  fontSize: 12,
-                                                ),
-                                              ),
-                                            ],
+                          if (widget.showVolume)
+                            Expanded(
+                              flex: 1,
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        border: Border(
+                                          right: BorderSide(
+                                            color: Theme.of(context).grayColor,
+                                            width: 1,
                                           ),
                                         ),
                                       ),
-                                    ],
+                                      child: Padding(
+                                        padding:
+                                            const EdgeInsets.only(top: 10.0),
+                                        child: VolumeWidget(
+                                          candles: widget.candles,
+                                          barWidth: widget.candleWidth,
+                                          index: widget.index,
+                                          high: HelperFunctions.getRoof(
+                                              volumeHigh),
+                                          bearColor:
+                                              Theme.of(context).secondaryRed,
+                                          bullColor:
+                                              Theme.of(context).secondaryGreen,
+                                        ),
+                                      ),
+                                    ),
                                   ),
-                                  width: PRICE_BAR_WIDTH,
-                                ),
-                              ],
+                                  SizedBox(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        SizedBox(
+                                          height: DATE_BAR_HEIGHT,
+                                          child: Center(
+                                            child: Row(
+                                              children: [
+                                                Text(
+                                                  "-${HelperFunctions.addMetricPrefix(HelperFunctions.getRoof(volumeHigh))}",
+                                                  style: TextStyle(
+                                                    color: Theme.of(context)
+                                                        .grayColor,
+                                                    fontSize: 12,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    width: PRICE_BAR_WIDTH,
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
                           SizedBox(
                             height: DATE_BAR_HEIGHT,
                           ),

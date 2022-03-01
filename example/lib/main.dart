@@ -63,6 +63,7 @@ class _MyAppState extends State<MyApp> {
         body: Center(
           child: Candlesticks(
             candles: candles,
+            showVolume: true,
           ),
         ),
       ),

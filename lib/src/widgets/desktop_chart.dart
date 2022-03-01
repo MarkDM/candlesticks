@@ -41,6 +41,8 @@ class DesktopChart extends StatefulWidget {
 
   final Function() onReachEnd;
 
+  final bool showVolume;
+
   DesktopChart({
     required this.onScaleUpdate,
     required this.onHorizontalDragUpdate,
@@ -50,6 +52,7 @@ class DesktopChart extends StatefulWidget {
     required this.onPanDown,
     required this.onPanEnd,
     required this.onReachEnd,
+    this.showVolume = false,
   });
 
   @override
@@ -135,11 +138,11 @@ class _DesktopChartState extends State<DesktopChart> {
 
         return TweenAnimationBuilder(
           tween: Tween(begin: candlesHighPrice, end: candlesHighPrice),
-          duration: Duration(milliseconds: 300),
+          duration: Duration(milliseconds: 100),
           builder: (context, double high, _) {
             return TweenAnimationBuilder(
               tween: Tween(begin: candlesLowPrice, end: candlesLowPrice),
-              duration: Duration(milliseconds: 300),
+              duration: Duration(milliseconds: 100),
               builder: (context, double low, _) {
                 final currentCandle = mouseHoverX == null
                     ? null
@@ -201,7 +204,7 @@ class _DesktopChartState extends State<DesktopChart> {
                                           ),
                                         ),
                                         child: AnimatedPadding(
-                                          duration: Duration(milliseconds: 300),
+                                          duration: Duration(milliseconds: 100),
                                           padding: EdgeInsets.symmetric(
                                               vertical:
                                                   MAIN_CHART_VERTICAL_PADDING +
@@ -234,32 +237,34 @@ class _DesktopChartState extends State<DesktopChart> {
                             flex: 1,
                             child: Row(
                               children: [
-                                Expanded(
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      border: Border(
-                                        right: BorderSide(
-                                          color: Theme.of(context).grayColor,
-                                          width: 1,
+                                if (widget.showVolume)
+                                  Expanded(
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        border: Border(
+                                          right: BorderSide(
+                                            color: Theme.of(context).grayColor,
+                                            width: 1,
+                                          ),
+                                        ),
+                                      ),
+                                      child: Padding(
+                                        padding:
+                                            const EdgeInsets.only(top: 10.0),
+                                        child: VolumeWidget(
+                                          candles: widget.candles,
+                                          barWidth: widget.candleWidth,
+                                          index: widget.index,
+                                          high: HelperFunctions.getRoof(
+                                              volumeHigh),
+                                          bearColor:
+                                              Theme.of(context).secondaryRed,
+                                          bullColor:
+                                              Theme.of(context).secondaryGreen,
                                         ),
                                       ),
                                     ),
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(top: 10.0),
-                                      child: VolumeWidget(
-                                        candles: widget.candles,
-                                        barWidth: widget.candleWidth,
-                                        index: widget.index,
-                                        high:
-                                            HelperFunctions.getRoof(volumeHigh),
-                                        bearColor:
-                                            Theme.of(context).secondaryRed,
-                                        bullColor:
-                                            Theme.of(context).secondaryGreen,
-                                      ),
-                                    ),
                                   ),
-                                ),
                                 SizedBox(
                                   child: Column(
                                     crossAxisAlignment:

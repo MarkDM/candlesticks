@@ -22,12 +22,14 @@ class Candlesticks extends StatefulWidget {
 
   /// list of buttons you what to add on top tool bar
   final List<ToolBarAction> actions;
+  final bool showVolume;
 
   Candlesticks({
     Key? key,
     required this.candles,
     this.onLoadMoreCandles,
     this.actions = const [],
+    this.showVolume = false,
   }) : super(key: key);
 
   @override
@@ -84,8 +86,10 @@ class _CandlesticksState extends State<Candlesticks> {
                 if (kIsWeb ||
                     Platform.isMacOS ||
                     Platform.isWindows ||
-                    Platform.isLinux) {
+                    Platform.isLinux ||
+                    true) {
                   return DesktopChart(
+                    showVolume: widget.showVolume,
                     onScaleUpdate: (double scale) {
                       scale = max(0.90, scale);
                       scale = min(1.1, scale);
@@ -125,6 +129,7 @@ class _CandlesticksState extends State<Candlesticks> {
                   );
                 } else {
                   return MobileChart(
+                    showVolume: widget.showVolume,
                     onScaleUpdate: (double scale) {
                       scale = max(0.90, scale);
                       scale = min(1.1, scale);
